@@ -3,8 +3,8 @@ import { client } from "./utils/fetchWrapper.js";
 import { months } from "./constants.js";
 import { createFormattedDateFromStr } from "./utils/dateFunctions.js";
 
-const addForm = document.querySelector("#add-task");
-const deleteForm = document.querySelector("#delete-tasks");
+const addForm = document.getElementById("add-task");
+const deleteForm = document.getElementById("delete-tasks");
 const tasksCheckboxContainers = document.querySelectorAll(
   ".tasks-checkbox-container"
 );
@@ -67,33 +67,28 @@ function showErrorMsg() {
 }
 
 function addViewModes() {
-  document
-    .querySelector(".chart-controls #day-btn")
-    .addEventListener("click", () => {
-      ganttChart.change_view_mode("Day");
-    });
-  document
-    .querySelector(".chart-controls #week-btn")
-    .addEventListener("click", () => {
-      ganttChart.change_view_mode("Week");
-    });
-  document
-    .querySelector(".chart-controls #month-btn")
-    .addEventListener("click", () => {
-      ganttChart.change_view_mode("Month");
-    });
+  document.getElementById("day-btn").addEventListener("click", () => {
+    ganttChart.change_view_mode("Day");
+  });
+  document.getElementById("week-btn").addEventListener("click", () => {
+    ganttChart.change_view_mode("Week");
+  });
+  document.getElementById("month-btn").addEventListener("click", () => {
+    ganttChart.change_view_mode("Month");
+  });
 }
 
 function addTaskCheckboxes() {
   tasksCheckboxContainers.forEach((container, i) => {
     container.innerHTML = "";
+    const fragment = new DocumentFragment();
     const legend = document.createElement("legend");
     if (i === 0) {
       legend.appendChild(document.createTextNode("Dependencies"));
     } else {
       legend.appendChild(document.createTextNode("Tasks"));
     }
-    container.appendChild(legend);
+    fragment.appendChild(legend);
     tasks.map((task) => {
       const div = document.createElement("div");
       const checkbox = document.createElement("input");
@@ -107,8 +102,9 @@ function addTaskCheckboxes() {
       label.appendChild(document.createTextNode(task.name));
       div.appendChild(checkbox);
       div.appendChild(label);
-      container.appendChild(div);
+      fragment.appendChild(div);
     });
+    container.appendChild(fragment);
   });
 }
 
@@ -175,11 +171,7 @@ function deleteTasks(e) {
   }
 
   // remove deleted tasks
-  const filteredTasks = tasks.filter((task) => {
-    if (!taskIds.includes(task.id)) {
-      return true;
-    }
-  });
+  const filteredTasks = tasks.filter((task) => !taskIds.includes(task.id));
 
   // remove deleted dependencies
   const newTasks = filteredTasks.map((tsk) => {
@@ -188,11 +180,7 @@ function deleteTasks(e) {
     }
 
     const depsArr = tsk.dependencies;
-    const newDeps = depsArr.filter((dep) => {
-      if (!taskIds.includes(dep)) {
-        return true;
-      }
-    });
+    const newDeps = depsArr.filter((dep) => !taskIds.includes(dep));
 
     return {
       ...tsk,
@@ -219,32 +207,15 @@ function updateDate(task, start, end) {
     startDay
   );
   const endStr = createFormattedDateFromStr(endYear, endMonth + 1, endDay);
-
-  const newTasks = tasks.map((tsk) => {
-    if (tsk.id === task.id) {
-      return {
-        ...tsk,
-        start: startStr,
-        end: endStr,
-      };
-    }
-    return tsk;
-  });
-  tasks = newTasks;
+  const taskToUpdate = tasks.find((tsk) => tsk.id === task.id);
+  taskToUpdate.start = startStr;
+  taskToUpdate.end = endStr;
   ganttChart.refresh(tasks);
 }
 
 function updateProgress(task, progress) {
-  const newTasks = tasks.map((tsk) => {
-    if (tsk.id === task.id) {
-      return {
-        ...tsk,
-        progress,
-      };
-    }
-    return tsk;
-  });
-  tasks = newTasks;
+  const taskToUpdate = tasks.find((tsk) => tsk.id === task.id);
+  taskToUpdate.progress = progress;
   ganttChart.refresh(tasks);
 }
 
