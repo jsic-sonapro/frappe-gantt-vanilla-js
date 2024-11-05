@@ -15,6 +15,20 @@ h2 {
   margin: 0.5rem;
 }
 
+.button-popup {
+  color: white;
+  background: #555555;
+  font-size: 1.1rem;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.05);
+  padding: 0.4rem 0.5rem;
+  margin-top: 0.3rem;
+  border: 0;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+}
+
 button {
   color: white;
   background: #2ade3c;
@@ -89,9 +103,15 @@ fieldset legend {
   padding: 1rem;
 }
 
-.gantt-container .popup-wrapper .details-container {
+.gantt-container .popup-wrapper {
   width: 180px;
   padding: 0.3rem;
+}
+
+.details-container {
+  width: 180px;
+  padding: 0.3rem;
+  display: flexbox;
 }
 
 .gantt .bar {
@@ -140,6 +160,11 @@ fieldset legend {
 
 #controls-container form > label {
   font-weight: bold;
+}
+
+.input-popup {
+  margin-top: 0.2rem;
+  max-width: 2rem;
 }
 
 .important-checkbox-container {
